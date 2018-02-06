@@ -2,6 +2,7 @@ __author__ = 'Robin'
 
 import cv2
 import matplotlib.pyplot as plt
+import glob
 
 '''
 Helper function to convert an image to rgb
@@ -28,10 +29,17 @@ def detect_objects(cascade, colored_img, scaleFactor = 1.1):
 
     return img_copy
 
-test1 = cv2.imread('./test/data/test1.jpg')
+#test1 = cv2.imread('./test/data/test1.jpg')
+images = glob.glob('./test/data/*.jpg')
 #load cascade classifier training file for haarcascade
 haar_face_cascade = cv2.CascadeClassifier('./test/data/haarcascade_frontalface_alt.xml')
+for imgPath in images:
+    img = cv2.imread(imgPath)
+    detected_img = detect_objects(haar_face_cascade, img, scaleFactor=1.2)
+    plt.imshow(convertToRGB(detected_img))
+    plt.show()
+
 #convert image to RGB and show image
-detected_img = detect_objects(haar_face_cascade, test1)
-plt.imshow(convertToRGB(detected_img))
-plt.show()
+#detected_img = detect_objects(haar_face_cascade, test1)
+#plt.imshow(convertToRGB(detected_img))
+#plt.show()
