@@ -30,9 +30,9 @@ def detect_objects(cascade, colored_img, scaleFactor = 1.1):
     return img_copy
 
 #test1 = cv2.imread('./test/data/test1.jpg')
-images = glob.glob('./test/data/*.jpg')
+images = glob.glob('./data/test/*.jpg')
 #load cascade classifier training file for haarcascade
-haar_face_cascade = cv2.CascadeClassifier('./test/data/haarcascade_frontalface_alt.xml')
+haar_face_cascade = cv2.CascadeClassifier('./data/test/haarcascade_frontalface_alt.xml')
 for imgPath in images:
     img = cv2.imread(imgPath)
     detected_img = detect_objects(haar_face_cascade, img, scaleFactor=1.2)
