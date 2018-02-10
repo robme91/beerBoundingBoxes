@@ -1,12 +1,14 @@
 import os
 import json
 
-merged_file = open('info.dat', 'w')
+base_path = '../data/beerBottles/'
+jsonsPath = base_path + 'positives/'
+merged_file = open(base_path + 'info.dat', 'w')
 
-for filename in os.listdir('./'):
+for filename in os.listdir(jsonsPath):
     if filename[-5:] != '.json':
         continue
-    data = json.load(open(filename))
+    data = json.load(open(jsonsPath + filename))
     imgPath = 'positives/' + filename[:-4] + 'jpg'
 
     # relativ path
