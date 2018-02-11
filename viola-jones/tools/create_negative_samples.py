@@ -26,3 +26,5 @@ for imgPath in images:
     negativesFile.write('\n')
     counter += 1
     print('Created negative' + str(counter))
+
+negativesFile.close()
