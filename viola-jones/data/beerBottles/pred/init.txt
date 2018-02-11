@@ -1,0 +1,1 @@
+this file is just here, so that you see the file and folder structure of the viola-jones project and training
