@@ -1,3 +1,4 @@
+import glob
 import json
 import os
 from random import randint
@@ -9,9 +10,15 @@ class Dataset:
 
     def __init__(self, path):
         self.path = path
+        self.fileIds = []
+        for filename in glob.glob(path + '/*.json'):
+            self.fileIds.append(os.path.splitext(os.path.basename(filename))[0])
+
+    def getFileIds(self):
+        return self.fileIds
 
     def getRandomPicture(self):
-        n = randint(0,1000)
+        n = self.fileIds[randint(0, len(self.fileIds))]
         return self.getPicture(n), n
 
     def getPicture(self, n):

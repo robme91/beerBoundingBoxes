@@ -9,9 +9,9 @@ import numpy as np
 from rcnn.selectivesearch.selectivesearch import selectivesearch
 from rcnn.utils.dataset import Dataset
 
-dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/FINAL')
-path_nobeer = '/home/devfoo/Dev/Studium/ISY/data/nobeer'
-path_beer = '/home/devfoo/Dev/Studium/ISY/data/beer'
+dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/test')
+path_nobeer = '/home/devfoo/Dev/Studium/ISY/data/nobeer/test'
+path_beer = '/home/devfoo/Dev/Studium/ISY/data/beer/test'
 square_size = 50
 ss_scale = 500
 ss_sigma = 0.8
@@ -27,7 +27,7 @@ def _store_sample(path, img):
     id = uuid.uuid4()
     cv2.imwrite(path + os.sep + str(id) + '.jpg', img)
 
-for n in range(0, 1000):
+for n in dataset.fileIds:
     img = dataset.getPicture(n)
     img_no_beer = img.copy()
     # get beer bottle and store training sample in 4 different rotation angles
