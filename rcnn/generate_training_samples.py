@@ -5,8 +5,8 @@ import uuid
 
 import cv2
 import numpy as np
-from rcnn.selectivesearch.selectivesearch import selectivesearch
 
+from rcnn.selectivesearchAlpacaDB.selectivesearch import selectivesearch
 from rcnn.utils.dataset import Dataset
 
 dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/train')

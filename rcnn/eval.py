@@ -1,7 +1,7 @@
 import cv2
-from rcnn.selectivesearch.selectivesearch import selectivesearch
 
 from rcnn.cnn.cnn import CNN
+from rcnn.selectivesearchAlpacaDB.selectivesearch import selectivesearch
 from rcnn.utils.dataset import Dataset
 
 cnn = CNN()
