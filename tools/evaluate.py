@@ -31,8 +31,8 @@ def iou(a, b):
     area_u = u[2] * u[3]
     return float(area_i) / float(area_u)
 
-pred_path = './pred/'
-gold_path = './gold/'
+pred_path = './viola-jones/data/beerBottles/pred/'
+gold_path = './viola-jones/data/beerBottles/eval/'
 
 eval_file = open('evaluation.txt', 'w')
 overall_precision = []
@@ -53,11 +53,17 @@ for filename in os.listdir(pred_path):
     eval_file.write('eval - ' + filename[:-5] + '\n')
     eval_file.write('gold-annotations: ' + str(len(gold_data)) + ' - pred-annotations: ' + str(len(pred_data)) + '\n')
 
-    for pred_beer in pred_data:
-        pred_beer_coords = (pred_beer['x'], pred_beer['y'], pred_beer['w']+pred_beer['x'], pred_beer['h']+pred_beer['y'])
-        for gold_beer in gold_data:
-            gold_beer_coords = (gold_beer['x'], gold_beer['y'], gold_beer['w']+gold_beer['x'], gold_beer['h']+gold_beer['y'])
+    for gold_beer in gold_data:
+        gold_beer_coords = (gold_beer['x'], gold_beer['y'], gold_beer['w']+gold_beer['x'], gold_beer['h']+gold_beer['y'])
+        
+        # if no pred annotation add 0% precision
+        if len(pred_data) == 0:
+            scores.append(0.0)
 
+        for pred_beer in pred_data:
+            pred_beer_coords = (pred_beer['x'], pred_beer['y'], pred_beer['w']+pred_beer['x'], pred_beer['h']+pred_beer['y'])
+
+            # compute intersection over union score
             result = iou(pred_beer_coords, gold_beer_coords)
 
             scores.append(result)
@@ -87,3 +93,6 @@ for filename in os.listdir(pred_path):
 
 if len(overall_precision) != 0:
     print('model-precision: ' + str(sum(overall_precision) / len(overall_precision)))
+    eval_file.write('\n')    
+    eval_file.write('model-precision: ' + str(sum(overall_precision) / len(overall_precision)) + '\n')
+    eval_file.write('\n')
