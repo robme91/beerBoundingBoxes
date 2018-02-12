@@ -8,12 +8,12 @@ from rcnn.cnn.cnn import CNN
 from rcnn.selectivesearchAlpacaDB.selectivesearch import selectivesearch
 from rcnn.utils.dataset import Dataset
 
-# cnn = CNN('/home/devfoo/Dev/Studium/ISY/keras_model_full-train.h5')
-cnn = CNN('cnn/keras_model_less-nobeer.h5')
+cnn = CNN('/home/devfoo/Dev/Studium/ISY/keras_model_full-train.h5', 0.95)
+# cnn = CNN('cnn/keras_model_less-nobeer.h5', 0.99)
 dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/test')
 
-PATH_RESULT_IMG = '/home/devfoo/Dev/Studium/ISY/results/cnn_small_99p/images/'
-PATH_RESULT_JSON = '/home/devfoo/Dev/Studium/ISY/results/cnn_small_99p/json/'
+PATH_RESULT_IMG = '/home/devfoo/Dev/Studium/ISY/results/cnn_full_95p/images/'
+PATH_RESULT_JSON = '/home/devfoo/Dev/Studium/ISY/results/cnn_full_95p/json/'
 
 imgs = []
 fileIds = dataset.fileIds
