@@ -5,7 +5,7 @@ import numpy as np
 
 from rcnn.cnn.cnn import CNN
 
-cnn = CNN()
+cnn = CNN('keras_model_less-nobeer.h5')
 imgs = []
 for filename in glob('/home/devfoo/Dev/Studium/ISY/data/beer/test/*.jpg'):
     img = cv2.imread(filename)
