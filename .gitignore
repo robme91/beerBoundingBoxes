@@ -6,6 +6,17 @@ __pycache__/
 # C extensions
 *.so
 
+# Img and json files
+*.jpg
+*.json
+**.json
+**jpg
+
+#Trainingfiles
+viola-jones/data/beerBottles/info.dat
+viola-jones/data/beerBottles/negatives.txt
+viola-jones/data/beerBottles/pos-samples.vec
+
 # Distribution / packaging
 .Python
 env/
@@ -24,6 +35,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.idea/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

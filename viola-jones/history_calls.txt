@@ -1,0 +1,42 @@
+History sample and cascade training creation:
+
+Test 0 (4 files):
+* opencv_createsamples -vec pos-samples.vec -info data/beerBottles/info.dat -h 32 -w 10 -show
+* opencv_traincascade -data cascade -vec pos-samples.vec -bg data/beerBottles/negatives.txt -numPos 2 -numNeg 2 -numStages 5 -p
+recalcValBufSize 32 -precalcIdxBufSize 32 -h 32 -w 10  
+
+>>>> Did not worked <<<<<<<
+
+Test 30 Files:
+* opencv_createsamples -vec pos-samples.vec -info info.dat -h 96 -w 30 -show
+* opencv_traincascade -data cascade -vec pos-samples.vec -bg negatives.txt -numPos 2 -numNeg 2 -numStages 2 -precalcValBufSize 16 -precalcIdxBufSize 16 -h 96 -w 30
+
+>>>>Did not worked <<<<<<<
+
+Test All files but 300 samples:
+* opencv_createsamples -vec pos-samples.vec -info info.dat -num 300 -h 96 -w 30
+* opencv_traincascade -data cascade -vec pos-samples.vec -bg negatives.txt -numPos 10 -numNeg 4 -numStages 5 -precalcValBufSize 16 -precalcIdxBufSize 16 -h 96 -w 30 -weightTrimRate 0.95 -mode ALL
+
+>>>>> this finally worked, because of the -num parameter in create samples <<<<<
+
+Test with all files:
+* 900 samples
+* opencv_createsamples -vec pos-samples.vec -info info.dat -num 900 -h 96 -w 30
+* opencv_traincascade -data cascade -vec pos-samples.vec -bg negatives.txt -numPos 50 -numNeg 20 -numStages 20 -precalcValBufSize 64 -precalcIdxBufSize 64 -h 96 -w 30 -weightTrimRate 0.95 -mode ALL
+
+1. Test with Split Data:
+* create all 800 samples for positives
+* use 800 negatives
+* train 30 stages with 100 positives and 50 negatives
+* opencv_createsamples -vec pos-samples.vec -info info.dat -num 800 -h 96 -w 30
+* opencv_traincascade -data cascade -vec pos-samples.vec -bg negatives.txt -numPos 100 -numNeg 50 -numStages 30 -precalcValBufSize 512 -precalcIdxBufSize 512 -h 96 -w 30 -weightTrimRate 0.95 -mode ALL
+
+
+2. Test with Split Data:
+* create all 800 samples for positives
+* use 800 negatives
+*opencv_createsamples -vec pos-samples.vec -info info.dat -num 800 -h 96 -w 30
+* opencv_traincascade -data cascade -vec pos-samples.vec -bg negatives.txt -numPos 400 -numNeg 200 -numStages 20 -precalcValBufSize 512 -precalcIdxBufSize 512 -h 96 -w 30 -weightTrimRate 0.95 -mode ALL
+
+
+maxFalseratre runter setzen
