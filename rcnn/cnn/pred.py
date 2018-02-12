@@ -7,7 +7,7 @@ from rcnn.cnn.cnn import CNN
 
 cnn = CNN()
 imgs = []
-for filename in glob('/home/devfoo/Dev/Studium/ISY/data/beer/*.jpg'):
+for filename in glob('/home/devfoo/Dev/Studium/ISY/data/beer/test/*.jpg'):
     img = cv2.imread(filename)
     # img = img.reshape(1,50,50,3)
     img = img.astype('float32')

@@ -5,13 +5,13 @@ import uuid
 
 import cv2
 import numpy as np
-
 from rcnn.selectivesearch.selectivesearch import selectivesearch
+
 from rcnn.utils.dataset import Dataset
 
-dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/test')
-path_nobeer = '/home/devfoo/Dev/Studium/ISY/data/nobeer/test'
-path_beer = '/home/devfoo/Dev/Studium/ISY/data/beer/test'
+dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/train')
+path_nobeer = '/home/devfoo/Dev/Studium/ISY/data/nobeer/train'
+path_beer = '/home/devfoo/Dev/Studium/ISY/data/beer/train'
 square_size = 50
 ss_scale = 500
 ss_sigma = 0.8
