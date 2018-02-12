@@ -50,7 +50,7 @@ for filename in os.listdir(pred_path):
     pred_data = json.load(open(pred_path + filename))
     gold_data = json.load(open(gold_path + filename))
 
-    eval_file.write('eval - ' + filename + '\n')
+    eval_file.write('eval - ' + filename[:-5] + '\n')
     eval_file.write('gold-annotations: ' + str(len(gold_data)) + ' - pred-annotations: ' + str(len(pred_data)) + '\n')
 
     for pred_beer in pred_data:
@@ -64,7 +64,7 @@ for filename in os.listdir(pred_path):
 
             if result == 0.0:
                 no_match.append(result)
-            if result <= 0.5 and result != 0:
+            if result <= 0.5 and result != 0.0:
                 bad_match.append(result)
             if result > 0.5:
                 good_match.append(result)
