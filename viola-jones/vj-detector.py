@@ -57,10 +57,10 @@ images = glob.glob(EVAL_IMGS_PATH + '*.jpg')
 #load cascade classifier training file for haarcascade
 #haar_face_cascade = cv2.CascadeClassifier('./data/test/haarcascade_frontalface_alt.xml')
 # TODO Hier den Classifieer Pfad anpassen
-beer_bottle_filter = cv2.CascadeClassifier('./data/beerBottles/cascade/history/test0/cascade.xml')
+beer_bottle_filter = cv2.CascadeClassifier('./data/beerBottles/cascade/cascade.xml')
 for imgPath in images:
     img = cv2.imread(imgPath)
     detected_img = detect_objects(beer_bottle_filter, imgPath, img, scaleFactor=1.2)
     # TODO auskommentieren wenn keine visuelle Ausgabe gewünscht
-    plt.imshow(convertToRGB(detected_img))
-    plt.show()
+    #plt.imshow(convertToRGB(detected_img))
+    #plt.show()
