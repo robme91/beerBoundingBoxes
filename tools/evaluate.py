@@ -31,11 +31,16 @@ def iou(a, b):
 
     return float(i) / float(u)
 
+
 pred_path = './viola-jones/data/beerBottles/pred/'
 gold_path = './viola-jones/data/beerBottles/eval/'
 
-eval_file = open('evaluation.txt', 'w')
 overall_precision = []
+gold_annotations_count = 0
+pred_annotations_count = 0
+
+json_file = open(pred_path + '/results/' + 'evaluation.json', mode='w', encoding='utf-8')
+eval_data = []
 
 for filename in os.listdir(pred_path):
     if filename[-5:] != '.json':
@@ -49,25 +54,23 @@ for filename in os.listdir(pred_path):
     # eval and pred jsons have same naming?!
     pred_data = json.load(open(pred_path + filename))
     gold_data = json.load(open(gold_path + filename))
-
-    eval_file.write('eval - ' + filename[:-5] + '\n')
-    eval_file.write('gold-annotations: ' + str(len(gold_data)) + ' - pred-annotations: ' + str(len(pred_data)) + '\n')
-
+ 
     for gold_beer in gold_data:
         gold_beer_coords = (gold_beer['x'], gold_beer['y'], gold_beer['w']+gold_beer['x'], gold_beer['h']+gold_beer['y'])
-        
+        gold_annotations_count += 1
+
         # if no pred annotation add 0% precision
         if len(pred_data) == 0:
             scores.append(0.0)
 
         for pred_beer in pred_data:
             pred_beer_coords = (pred_beer['x'], pred_beer['y'], pred_beer['w']+pred_beer['x'], pred_beer['h']+pred_beer['y'])
+            pred_annotations_count += 1
 
             # compute intersection over union score
             result = iou(pred_beer_coords, gold_beer_coords)
 
             scores.append(result)
-
             if result == 0.0:
                 no_match.append(result)
             if result <= 0.5 and result != 0.0:
@@ -75,24 +78,39 @@ for filename in os.listdir(pred_path):
             if result > 0.5:
                 good_match.append(result)
 
+    good_match_prec = 0.0
+    bad_match_prec = 0.0
+    score_prec = 0.0
 
     if len(good_match) != 0:
-        eval_file.write('good match:    found - ' + str(len(good_match)) + '    precision - ' +  str(sum(good_match)/len(good_match)) + '\n')
-
+        good_match_prec = sum(good_match)/len(good_match)
     if len(bad_match) != 0:
-        eval_file.write('bad match:     found - ' + str(len(bad_match)) + '     precision - ' + str(sum(bad_match)/len(bad_match)) + '\n')
-
-    if len(no_match) != 0:
-        eval_file.write('no match:      found - ' + str(len(no_match)) + '\n')
-
+        bad_match_prec = sum(bad_match)/len(bad_match)
     if len(scores) != 0:
-        eval_file.write('precision on image - ' + str(sum(scores)/len(scores)) + '\n')
+        score_prec = sum(scores)/len(scores)
         overall_precision.append(sum(scores)/len(scores))
 
-    eval_file.write('\n')
+    eval_data.append({
+        'filename': filename[:-5],
+        'gold-annotations-count:': len(gold_data),
+        'pred-annotations-count:': len(pred_data),
+        'image-precision': score_prec,
+        'good-match-count': len(good_match),
+        'good-match-precision': good_match_prec,
+        'bad-match-count': len(bad_match),
+        'bad-match-precision': bad_match_prec,
+        'no-match-count': len(no_match)
+        })
 
 if len(overall_precision) != 0:
     print('model-precision: ' + str(sum(overall_precision) / len(overall_precision)))
-    eval_file.write('\n')    
-    eval_file.write('model-precision: ' + str(sum(overall_precision) / len(overall_precision)) + '\n')
-    eval_file.write('\n')
+    
+    evaluation = {
+        'image-evaluation': eval_data,
+        'image-count:': len(os.listdir(pred_path)),
+        'gold-annotations': gold_annotations_count,
+        'pred-annotations': pred_annotations_count,
+        'model-precision': sum(overall_precision) / len(overall_precision)
+        }
+    json.dump(evaluation, json_file)
+json_file.close()
