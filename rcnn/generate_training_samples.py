@@ -9,10 +9,10 @@ import numpy as np
 from rcnn.selectivesearchAlpacaDB.selectivesearch import selectivesearch
 from rcnn.utils.dataset import Dataset
 
-dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/train')
-path_nobeer = '/home/devfoo/Dev/Studium/ISY/data/nobeer/train'
-path_beer = '/home/devfoo/Dev/Studium/ISY/data/beer/train'
-square_size = 50
+dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/test')
+path_nobeer = '/home/devfoo/Dev/Studium/ISY/data/200px/nobeer/test'
+path_beer = '/home/devfoo/Dev/Studium/ISY/data/200px/beer/test'
+square_size = 200
 ss_scale = 500
 ss_sigma = 0.8
 ss_min_size = 100

@@ -8,12 +8,14 @@ from rcnn.cnn.cnn import CNN
 from rcnn.selectivesearchAlpacaDB.selectivesearch import selectivesearch
 from rcnn.utils.dataset import Dataset
 
-cnn = CNN('/home/devfoo/Dev/Studium/ISY/keras_model_full-train.h5', 0.95)
+square_size = 200
+# cnn = CNN('/home/devfoo/Dev/Studium/ISY/keras_model_full-train.h5', 0.5)
+# cnn = CNN('/home/devfoo/Dev/Studium/ISY/keras_model_full-train.h5', 0.5)
+cnn = CNN('/home/devfoo/Dev/Studium/ISY/bbb_large-1to2.h5', 0.5)
 # cnn = CNN('cnn/keras_model_less-nobeer.h5', 0.99)
 dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/test')
-
-PATH_RESULT_IMG = '/home/devfoo/Dev/Studium/ISY/results/cnn_full_95p/images/'
-PATH_RESULT_JSON = '/home/devfoo/Dev/Studium/ISY/results/cnn_full_95p/json/'
+PATH_RESULT_IMG = '/home/devfoo/Dev/Studium/ISY/results/cnn_large_50p/images/'
+PATH_RESULT_JSON = '/home/devfoo/Dev/Studium/ISY/results/cnn_large_50p/json/'
 
 imgs = []
 fileIds = dataset.fileIds
@@ -29,12 +31,12 @@ for imgId in dataset.fileIds:
     for region in regions:
         x0, y0, w, h = region['rect']
         if w == 0 or h == 0:
-            region_img = np.zeros((50,50,3))
+            region_img = np.zeros((square_size,square_size,3))
             beer_region_candidates.append(region_img)
             continue
         region_img = img[y0:y0 + h, x0:x0 + w]
-        region_img = cv2.resize(region_img,(50,50))
-        # region_img = region_img.reshape(1,50,50,3)
+        region_img = cv2.resize(region_img,(square_size,square_size))
+        # region_img = region_img.reshape(1,square_size,square_size,3)
         region_img = region_img.astype('float32')
         region_img /= 255
         beer_region_candidates.append(region_img)
