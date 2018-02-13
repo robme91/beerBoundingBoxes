@@ -12,6 +12,9 @@ __pycache__/
 **.json
 **jpg
 
+# Evaluation-files
+!viola-jones/data/beerBottles/pred/results/*
+
 #Trainingfiles
 viola-jones/data/beerBottles/info.dat
 viola-jones/data/beerBottles/negatives.txt
