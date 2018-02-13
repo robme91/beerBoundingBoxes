@@ -34,9 +34,12 @@ Test with all files:
 
 2. Test with Split Data:
 * create all 800 samples for positives
-* use 800 negatives
 *opencv_createsamples -vec pos-samples.vec -info info.dat -num 800 -h 96 -w 30
 * opencv_traincascade -data cascade -vec pos-samples.vec -bg negatives.txt -numPos 400 -numNeg 200 -numStages 20 -precalcValBufSize 512 -precalcIdxBufSize 512 -h 96 -w 30 -weightTrimRate 0.95 -mode ALL
 
 
-maxFalseratre runter setzen
+3. Test with Split Data:
+* create all 800 samples for positives
+* use more negatives than positives, so the machine can better differ between whats right and wrong
+*opencv_createsamples -vec pos-samples.vec -info info.dat -num 800 -h 96 -w 30
+* opencv_traincascade -data cascade -vec pos-samples.vec -bg negatives.txt -numPos 400 -numNeg 800 -numStages 15 -precalcValBufSize 512 -precalcIdxBufSize 512 -h 96 -w 30 -weightTrimRate 0.95 -mode ALL 

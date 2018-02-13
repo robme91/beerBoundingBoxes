@@ -62,5 +62,5 @@ for imgPath in images:
     img = cv2.imread(imgPath)
     detected_img = detect_objects(beer_bottle_filter, imgPath, img, scaleFactor=1.2)
     # TODO auskommentieren wenn keine visuelle Ausgabe gewünscht
-    #plt.imshow(convertToRGB(detected_img))
-    #plt.show()
+    plt.imshow(convertToRGB(detected_img))
+    plt.show()
