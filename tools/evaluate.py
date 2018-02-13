@@ -2,22 +2,24 @@ import os
 import json
 import math
 
-# from keras: https://github.com/broadinstitute/keras-rcnn/blob/78313b6e9adf918b92ee1842adc199cb8fbe8df0/keras_rcnn/preprocessing/_object_detection.py#L19-L24
-def union(au, bu):
-    x = min(au[0], bu[0])
-    y = min(au[1], bu[1])
-    w = max(au[2], bu[2]) - x
-    h = max(au[3], bu[3]) - y
-    return x, y, w, h
+def union(au, bu, i):
+    aA = (max(au[0], au[2]) - min(au[0], au[2])) * (max(au[1], au[3]) - min(au[1], au[3]))
+    bA = (max(bu[0], bu[2]) - min(bu[0], bu[2])) * (max(bu[1], bu[3]) - min(bu[1], bu[3]))
+    # x = min(au[0], bu[0])
+    # y = min(au[1], bu[1])
+    # w = max(au[2], bu[2]) - x
+    # h = max(au[3], bu[3]) - y
+    return aA + bA - i
 
+# from keras: https://github.com/broadinstitute/keras-rcnn/blob/78313b6e9adf918b92ee1842adc199cb8fbe8df0/keras_rcnn/preprocessing/_object_detection.py#L19-L24
 def intersection(ai, bi):
     x = max(ai[0], bi[0])
     y = max(ai[1], bi[1])
     w = min(ai[2], bi[2]) - x
     h = min(ai[3], bi[3]) - y
     if w < 0 or h < 0:
-        return 0, 0, 0, 0
-    return x, y, w, h
+        return 0.0
+    return w*h
 
 def iou(a, b):
     # a and b should be (x1,y1,x2,y2)
@@ -25,11 +27,9 @@ def iou(a, b):
         return 0.0
 
     i = intersection(a, b)
-    u = union(a, b)
+    u = union(a, b, i)
 
-    area_i = i[2] * i[3]
-    area_u = u[2] * u[3]
-    return float(area_i) / float(area_u)
+    return float(i) / float(u)
 
 pred_path = './viola-jones/data/beerBottles/pred/'
 gold_path = './viola-jones/data/beerBottles/eval/'
