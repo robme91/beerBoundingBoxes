@@ -45,6 +45,7 @@ pred_path = './viola-jones/data/beerBottles/pred/'
 gold_path = './viola-jones/data/beerBottles/eval/'
 
 overall_precision = []
+file_count = 0
 gold_annotations_count = 0
 pred_annotations_count = 0
 
@@ -55,6 +56,7 @@ for filename in os.listdir(pred_path):
     if filename[-5:] != '.json':
         continue
 
+    file_count += 1
     scores = []
     no_match = []
     good_match = []
@@ -128,7 +130,7 @@ if len(overall_precision) != 0:
     print('model-precision: ' + str(sum(overall_precision) / len(overall_precision)))    
     evaluation = {
         'image-evaluation': eval_data,
-        'image-count:': len(os.listdir(pred_path)),
+        'image-count:': file_count,
         'gold-annotations': gold_annotations_count,
         'pred-annotations': pred_annotations_count,
         'model-precision': sum(overall_precision) / len(overall_precision)
