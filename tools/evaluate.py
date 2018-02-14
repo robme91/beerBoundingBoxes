@@ -44,7 +44,9 @@ def iou(a, b):
 pred_path = './viola-jones/data/beerBottles/pred/'
 gold_path = './viola-jones/data/beerBottles/eval/'
 
+overall_iou = []
 overall_precision = []
+overall_recall = []
 file_count = 0
 gold_annotations_count = 0
 pred_annotations_count = 0
@@ -57,7 +59,7 @@ for filename in os.listdir(pred_path):
         continue
 
     file_count += 1
-    scores = []
+    iou_arr = []
     no_match = []
     good_match = []
     bad_match = []
@@ -66,20 +68,28 @@ for filename in os.listdir(pred_path):
     pred_data = json.load(open(pred_path + filename))
     gold_data = json.load(open(gold_path + filename))    
     
+    # count gold and pred annotations for active images
+    pred_annotations_count += len(pred_data)
+    gold_annotations_count += len(gold_data)
     
-    # if no pred annotation add 0% precision
+    # if no pred annotation add 0.0 iou for each gold annotation
     if len(pred_data) == 0:
-        scores.append(0.0)
+        for gold_beer in gold_data:
+            iou_arr.append(0.0)
+            no_match.append(0.0)
     for pred_beer in pred_data:
-        pred_beer_values = (pred_beer['x'], pred_beer['y'], pred_beer['w'], pred_beer['h'])
-        pred_annotations_count += 1
-        q = queue.PriorityQueue()
+        # if no gold annotation given, add 0.0 iou
+        if len(gold_data) == 0:
+            iou_arr.append(0.0)
+            no_match.append(0.0)
+            continue
+        else:
+            pred_beer_values = (pred_beer['x'], pred_beer['y'], pred_beer['w'], pred_beer['h'])
+            q = queue.PriorityQueue()
 
-        if len(gold_data) != 0:
             # compute distance to each gold_beer
             for gold_beer in gold_data:
                 gold_beer_values = (gold_beer['x'], gold_beer['y'], gold_beer['w'], gold_beer['h'])
-                gold_annotations_count += 1
                 q.put((distance(pred_beer_values, gold_beer_values), gold_beer))
             
             # get shortest dist
@@ -88,11 +98,11 @@ for filename in os.listdir(pred_path):
             pred_beer_coords = (pred_beer['x'], pred_beer['y'], pred_beer['w']+pred_beer['x'], pred_beer['h']+pred_beer['y'])
             gold_beer_coords = (gold_beer['x'], gold_beer['y'], gold_beer['w']+gold_beer['x'], gold_beer['h']+gold_beer['y'])
 
-            # compute intersection over union score
+            # compute intersection over union coefficient
             result = iou(pred_beer_coords, gold_beer_coords)
 
-            # rank scores
-            scores.append(result)
+            # rank iou
+            iou_arr.append(result)
             if result == 0.0:
                 no_match.append(result)
             if result <= 0.5 and result != 0.0:
@@ -100,40 +110,68 @@ for filename in os.listdir(pred_path):
             if result > 0.5:
                 good_match.append(result)
 
-    good_match_prec = 0.0
-    bad_match_prec = 0.0
-    score_prec = 0.0
+    # iterate over annotations again to compute false negatives
+    fn = 0
+    for gold_beer in gold_data:
+        gold_beer_coords = (gold_beer['x'], gold_beer['y'], gold_beer['w']+gold_beer['x'], gold_beer['h']+gold_beer['y'])
+        false_negative_bool = True
+        for pred_beer in pred_data:
+            pred_beer_coords = (pred_beer['x'], pred_beer['y'], pred_beer['w']+pred_beer['x'], pred_beer['h']+pred_beer['y'])
+            result = iou(pred_beer_coords, gold_beer_coords)
+            if result > 0.5:
+                false_negative_bool = False
 
-    # compute average precisions
-    if len(good_match) != 0:
-        good_match_prec = sum(good_match)/len(good_match)
-    if len(bad_match) != 0:
-        bad_match_prec = sum(bad_match)/len(bad_match)
-    if len(scores) != 0:
-        score_prec = sum(scores)/len(scores)
+        if false_negative_bool == True:
+            fn += 1
 
-    # sum up precision over all documents
-    overall_precision.append(score_prec)
+    iou_coefficient = 0.0
+    precision = 0.0
+    recall = 0.0
+    F1 = 0.0
+
+    # compute precision, recall, f1 and iou for active image
+    if len(iou_arr) != 0:
+        iou_coefficient = sum(iou_arr) / len(iou_arr)
+        tp = len(good_match)
+        fp = len(bad_match) + len(no_match)
+
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+        if precision != 0.0 and recall != 0.0:
+            F1 = 2 * ((precision * recall) / (precision + recall))
+
+    # sum up precision, recall and iou over all documents
+    overall_precision.append(precision)
+    overall_recall.append(recall)
+    overall_iou.append(iou_coefficient)
+
+    # create json data
     eval_data.append({
         'filename': filename[:-5],
-        'gold-annotations-count:': len(gold_data),
-        'pred-annotations-count:': len(pred_data),
-        'image-precision': score_prec,
-        'good-match-count': len(good_match),
-        'good-match-precision': good_match_prec,
-        'bad-match-count': len(bad_match),
-        'bad-match-precision': bad_match_prec,
-        'no-match-count': len(no_match)
+        'gold-annotations:': len(gold_data),
+        'pred-annotations:': len(pred_data),
+        'precision': precision,
+        'recall': recall,
+        'F1': F1,
+        'iou-coefficient': iou_coefficient,
+        'good-matches': len(good_match),
+        'bad-matches': len(bad_match),
+        'no-matches': len(no_match)
         })
 
+
 if len(overall_precision) != 0:
-    print('model-precision: ' + str(sum(overall_precision) / len(overall_precision)))    
+    pr = sum(overall_precision) / len(overall_precision)
+    re = sum(overall_recall) / len(overall_recall)
     evaluation = {
-        'image-evaluation': eval_data,
+        'single-image-evaluation': eval_data,
         'image-count:': file_count,
         'gold-annotations': gold_annotations_count,
         'pred-annotations': pred_annotations_count,
-        'model-precision': sum(overall_precision) / len(overall_precision)
+        'precision': pr,
+        'recall': re,
+        'F1': 2 * ((pr * re) / (pr + re)),
+        'iou-coefficient': sum(overall_iou) / len(overall_iou)
         }
     json.dump(evaluation, json_file)
 json_file.close()
