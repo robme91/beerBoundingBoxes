@@ -45,7 +45,7 @@ for filename in glob('/home/devfoo/Dev/Studium/ISY/data/nobeer/test_small/*.jpg'
     img = cv2.imread(filename)
     x_eval.append(img)
 
-print('Got',len(x),'training samples and',len(x_eval),'eval samples...')
+print('Got', len(x), 'training samples and', len(x_eval), 'eval samples...')
 
 X_train = np.array(x).astype('float32')
 X_eval = np.array(x_eval).astype('float32')

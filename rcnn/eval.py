@@ -11,11 +11,11 @@ from rcnn.utils.dataset import Dataset
 square_size = 200
 # cnn = CNN('/home/devfoo/Dev/Studium/ISY/keras_model_full-train.h5', 0.5)
 # cnn = CNN('/home/devfoo/Dev/Studium/ISY/keras_model_full-train.h5', 0.5)
-cnn = CNN('/home/devfoo/Dev/Studium/ISY/bbb_large-1to2.h5', 0.5)
+cnn = CNN('/home/devfoo/Dev/Studium/ISY/bbb_large-1to2.h5', 0.99)
 # cnn = CNN('cnn/keras_model_less-nobeer.h5', 0.99)
 dataset = Dataset('/home/devfoo/Nextcloud@Beuth/ISY_BBB/images/SPLIT/split8020/test')
-PATH_RESULT_IMG = '/home/devfoo/Dev/Studium/ISY/results/cnn_large_50p/images/'
-PATH_RESULT_JSON = '/home/devfoo/Dev/Studium/ISY/results/cnn_large_50p/json/'
+PATH_RESULT_IMG = '/home/devfoo/Dev/Studium/ISY/results/cnn_large_99p/images/'
+PATH_RESULT_JSON = '/home/devfoo/Dev/Studium/ISY/results/cnn_large_99p/json/'
 
 imgs = []
 fileIds = dataset.fileIds
