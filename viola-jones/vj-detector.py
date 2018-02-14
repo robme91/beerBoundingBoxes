@@ -6,7 +6,7 @@ import glob
 import json
 
 EVAL_IMGS_PATH = './data/beerBottles/eval/'
-PRED_JSONS_PATH = './data/beerBottles/pred/'
+PRED_PATH = './data/beerBottles/pred/'
 
 def convertToRGB(img):
     '''
@@ -42,7 +42,9 @@ def detect_objects(cascade, imgPath, colored_img, scaleFactor = 1.1):
         })
     json.dump(eval_data, json_file)
     json_file.close()
+    cv2.imwrite(PRED_PATH + imgPath[-8:], img_copy)
     return img_copy
+
 
 def extract_json_filename(imgPath):
     '''
@@ -51,16 +53,39 @@ def extract_json_filename(imgPath):
     '''
     filename = imgPath[-8:-3] + 'json'
     print(filename)
-    return PRED_JSONS_PATH + filename
+    return PRED_PATH + filename
 
-images = glob.glob(EVAL_IMGS_PATH + '*.jpg')
-#load cascade classifier training file for haarcascade
-#haar_face_cascade = cv2.CascadeClassifier('./data/test/haarcascade_frontalface_alt.xml')
-# TODO Hier den Classifieer Pfad anpassen
+
+def create_predictions(beer_bottle_filter):
+    images = glob.glob(EVAL_IMGS_PATH + '*.jpg')
+    #load cascade classifier training file for haarcascade
+    #haar_face_cascade = cv2.CascadeClassifier('./data/test/haarcascade_frontalface_alt.xml')
+    # TODO Hier den Classifieer Pfad anpassen
+    for imgPath in images:
+        img = cv2.imread(imgPath)
+        detected_img = detect_objects(beer_bottle_filter, imgPath, img, scaleFactor=1.2)
+        # TODO auskommentieren wenn keine visuelle Ausgabe gewünscht
+        # plt.imshow(convertToRGB(detected_img))
+        # plt.show()
+
+
+def real_time_detection(beer_bottle_filter):
+    cap = cv2.VideoCapture(0)
+    cv2.namedWindow('Beer bottle detection')
+    while True:
+        _, img = cap.read()
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        objects = beer_bottle_filter.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
+        for (x, y, w, h) in objects:
+            cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv2.imshow('Beer bottle detection', img)
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+
+
 beer_bottle_filter = cv2.CascadeClassifier('./data/beerBottles/cascade/cascade.xml')
-for imgPath in images:
-    img = cv2.imread(imgPath)
-    detected_img = detect_objects(beer_bottle_filter, imgPath, img, scaleFactor=1.2)
-    # TODO auskommentieren wenn keine visuelle Ausgabe gewünscht
-    plt.imshow(convertToRGB(detected_img))
-    plt.show()
+#create_predictions(beer_bottle_filter)
+real_time_detection(beer_bottle_filter)
