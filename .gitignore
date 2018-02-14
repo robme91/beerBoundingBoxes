@@ -114,3 +114,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+viola-jones/data/beerBottles/pred/preSelected/good/webcam_beer_good.png
