@@ -124,6 +124,7 @@ Die restlichen Parameter entsprechen den Default-Werten von *Opencv*.
 
 #### Evaluation Viola-Jones
 Das Training liefert auf der Evaluationsmenge unseres Datensatzes ein halbwegs gutes Ergebnis mit den Scores:
+
 |           | Viola and Jones |
 |-----------|:---------------:|
 | Precision |       0.572     |
